@@ -13,29 +13,96 @@ function showCountry() {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("txtHint").innerHTML = this.responseText;
+                var obj = JSON.parse(this.responseText);
+                var temp="", temp_region={}, temp_subregion={};
+                var count=0;
+                if(criteria[0].checked || criteria[1].checked){
+	                for(var i=0; i<obj.length && i<50; i++){
+	                	temp += "Name: " + obj[i].name + "<br>";
+    	            	temp += "Alpha 2 Code: " + obj[i].alpha2Code + "<br>";
+        	        	temp += "Alpha 3 Code: " + obj[i].alpha3Code + "<br>";
+            	    	temp += "Flag:<br><img src='" + obj[i].flag + "' style='width:304px;height:228px;'><br>";
+               		 	temp += "Region: " + obj[i].region + "<br>";
+              		  	temp += "Subregion: " + obj[i].subregion +"<br>";
+              	 	 	temp += "List of Languages:<br>";
+              		  	for(var j=0; j<obj[i].languages.length; j++){
+               		 		temp += obj[i].languages[j].name + "<br>";
+                		}
+                		temp += "<br>";
+                		if(!(obj[i].region in temp_region)) temp_region[obj[i].region] = 0;
+                		if(!(obj[i].subregion in temp_subregion)) temp_subregion[obj[i].subregion] = 0;
+                		temp_region[obj[i].region]++;
+             	   		temp_subregion[obj[i].subregion]++;
+                		count++;  	
+                	}
+  	                if(count>0){
+  	              		temp += "Total number of countries: " + count + "<br><br>";
+	                  	temp += "Find the regions and their count below:<br>";
+    	              	for(var key in temp_region){
+                			temp += key +" ==> " + temp_region[key] + "<br>";
+                		}
+                	}
+                	temp += "<br>";
+                	temp += "Find the subregions and their count below:<br>";
+                	for(var key in temp_subregion){
+                		temp += key +" ==> " + temp_subregion[key] + "<br>";
+                	}
+                	document.getElementById("txtHint").innerHTML = temp;
+                }
+                else if(criteria[2].checked){
+	                temp += "Name: " + obj.name + "<br>";
+    	            temp += "Alpha 2 Code: " + obj.alpha2Code + "<br>";
+        	        temp += "Alpha 3 Code: " + obj.alpha3Code + "<br>";
+            	    temp += "Flag:<br><img src='" + obj.flag + "' style='width:304px;height:228px;'><br>";
+               		temp += "Region: " + obj.region + "<br>";
+              		temp += "Subregion: " + obj.subregion +"<br>";
+              	 	temp += "List of Languages:<br>";
+              		for(var j=0; j<obj.languages.length; j++){
+               			temp += obj.languages[j].name + "<br>";
+                	}
+                	temp += "<br>";
+                	if(!(obj.region in temp_region)) temp_region[obj.region] = 0;
+                	if(!(obj.subregion in temp_subregion)) temp_subregion[obj.subregion] = 0;
+                	temp_region[obj.region]++;
+             	   	temp_subregion[obj.subregion]++;
+                	count++;  	
+  	                if(count>0){
+  	              		temp += "Total number of countries: " + count + "<br><br>";
+	                  	temp += "Find the regions and their count below:<br>";
+    	              	for(var key in temp_region){
+                			temp += key +" ==> " + temp_region[key] + "<br>";
+                		}
+                	}
+                	temp += "<br>";
+                	temp += "Find the subregions and their count below:<br>";
+                	for(var key in temp_subregion){
+                		temp += key +" ==> " + temp_subregion[key] + "<br>";
+                	}
+                	document.getElementById("txtHint").innerHTML = temp;
+            	}
             }
         };
-        var criteria = document.getElementsByName("criteria");
-        if(criteria[0].checked){
-        	xmlhttp.open("GET", "index.php?name=" + str, true);
-        }
-        else if(criteria[1].checked){
-        	xmlhttp.open("GET", "index.php?fullName=" + str, true);
-        }
-        else if(criteria[2].checked){
-        	xmlhttp.open("GET", "index.php?code=" + str, true);
-        }
-        else{
-        	document.getElementById("txtHint").innerHTML = "Please select a search criteria.";
-        	return;
-        }
-        xmlhttp.send();
-        if(document.getElementById("txtHint").innerHTML === ""){
-        	document.getElementById("txtHint").innerHTML = "Please enter valid search text.";    	
-        }
+    }
+    var criteria = document.getElementsByName("criteria");
+    if(criteria[0].checked){
+      	xmlhttp.open("GET", "index.php?name=" + str, true);
+    }
+    else if(criteria[1].checked){
+       	xmlhttp.open("GET", "index.php?fullName=" + str, true);
+    }
+    else if(criteria[2].checked){
+       	xmlhttp.open("GET", "index.php?code=" + str, true);
+    }
+    else{
+       	document.getElementById("txtHint").innerHTML = "Please select a search criteria.";
+       	return;
+    }
+    xmlhttp.send();
+    if(document.getElementById("txtHint").innerHTML === ""){
+       	document.getElementById("txtHint").innerHTML = "Please enter valid search text.";    	
     }
 }
+
 </script>
 </head>
 <body>

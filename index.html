@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<script>
+function showCountry() {
+	event.preventDefault();
+	var str = document.getElementById("country").value;
+    if (str.length == 0) { 
+        document.getElementById("txtHint").innerHTML = "Please enter search text field.";
+        return;
+    } else {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("txtHint").innerHTML = this.responseText;
+            }
+        };
+        var criteria = document.getElementsByName("criteria");
+        if(criteria[0].checked){
+        	xmlhttp.open("GET", "index.php?name=" + str, true);
+        }
+        else if(criteria[1].checked){
+        	xmlhttp.open("GET", "index.php?fullName=" + str, true);
+        }
+        else if(criteria[2].checked){
+        	xmlhttp.open("GET", "index.php?code=" + str, true);
+        }
+        else{
+        	document.getElementById("txtHint").innerHTML = "Please select a search criteria.";
+        	return;
+        }
+        xmlhttp.send();
+        if(document.getElementById("txtHint").innerHTML === ""){
+        	document.getElementById("txtHint").innerHTML = "Please enter valid search text.";    	
+        }
+    }
+}
+</script>
+</head>
+<body>
+
+<form> 
+Search text: <input type="text" id="country">
+<input type="submit" value="Submit" id="submit" onclick="showCountry()"><br>
+Select criteria for country search:<br>
+<input type="radio" name="criteria" value="name"> Name
+<input type="radio" name="criteria" value="fullName"> Full Name
+<input type="radio" name="criteria" value="code"> Code<br>
+</form>
+<p><span id="txtHint"></span></p>
+</body>	
+</html>
